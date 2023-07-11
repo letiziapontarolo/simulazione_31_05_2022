@@ -39,7 +39,7 @@ public class FXMLController {
     private ComboBox<String> cmbProvider; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbQuartiere"
-    private ComboBox<?> cmbQuartiere; // Value injected by FXMLLoader
+    private ComboBox<String> cmbQuartiere; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtMemoria"
     private TextField txtMemoria; // Value injected by FXMLLoader
@@ -59,10 +59,38 @@ public class FXMLController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	
+    	cmbQuartiere.getItems().clear();
+    	txtResult.clear();
+    	
+    	String provider = cmbProvider.getSelectionModel().getSelectedItem();
+    	 if (provider == null) {
+    	 txtResult.appendText("Perfavore seleziona un provider!\n");
+    	 return;
+    	 }
+    	 
+    	 this.model.creaGrafo(provider);
+    	 
+    	 txtResult.appendText("GRAFO CREATO!\n");
+    	 txtResult.appendText("#VERTICI: " + this.model.numeroVertici() + "\n");
+    	 txtResult.appendText("#ARCHI: " + this.model.numeroArchi() + "\n");
+    	 
+    	 cmbQuartiere.getItems().addAll(this.model.listaQuartieri());
+    	 
+    	 
+    	
     }
 
     @FXML
     void doQuartieriAdiacenti(ActionEvent event) {
+    	
+    	String quartiere = cmbQuartiere.getSelectionModel().getSelectedItem();
+   	 if (quartiere == null) {
+   	 txtResult.appendText("Perfavore seleziona un quartiere!\n");
+   	 return;
+   	 }
+   	txtResult.appendText("QUARTIERI ADIACENTI AL QUARTIERE: " + quartiere + "\n");
+   	txtResult.appendText(this.model.quartieriAdiacenti(quartiere));
+    	
     	
     }
 
@@ -87,6 +115,7 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbProvider.getItems().addAll(this.model.listaProvider());
     }
 
 }
